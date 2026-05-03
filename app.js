@@ -107,6 +107,37 @@ function updateUserAvatar(user) {
     avatarBtn.innerHTML = `<span class="material-icons-round">person</span>`;
   }
   avatarBtn.title = user.name || 'User';
+  
+  setupUserMenu();
+}
+
+function setupUserMenu() {
+  const profileWrap = document.querySelector('.user-profile-wrap');
+  const avatarBtn = document.getElementById('user-avatar');
+  const btnSignOut = document.getElementById('btn-sign-out');
+
+  if (!profileWrap || !avatarBtn || !btnSignOut) return;
+
+  // Toggle dropdown
+  avatarBtn.onclick = (e) => {
+    e.stopPropagation();
+    profileWrap.classList.toggle('active');
+  };
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!profileWrap.contains(e.target)) {
+      profileWrap.classList.remove('active');
+    }
+  });
+
+  // Sign out
+  btnSignOut.onclick = async () => {
+    await window.cricAuth.signOut();
+    localStorage.removeItem('cricpulse_team');
+    // Reload page to reset state completely
+    window.location.reload();
+  };
 }
 
 async function enterApp(teamAbbr) {
