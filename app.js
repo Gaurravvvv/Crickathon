@@ -130,26 +130,22 @@ function setupUserMenu() {
       profileWrap.classList.remove('active');
     }
   });
-
-  // Remove old listeners to prevent duplicates if called multiple times
-  const newBtn = btnSignOut.cloneNode(true);
-  btnSignOut.parentNode.replaceChild(newBtn, btnSignOut);
-
-  // Sign out
-  newBtn.addEventListener('click', async (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    console.log("Signing out...");
-    try {
-      await window.cricAuth.signOut();
-      localStorage.removeItem('cricpulse_team');
-      // Force reload to login screen
-      window.location.href = window.location.pathname;
-    } catch(err) {
-      console.error("Sign out error", err);
-    }
-  });
 }
+
+// Global Sign Out function
+window.doSignOut = async () => {
+  console.log("Signing out globally...");
+  try {
+    if (window.cricAuth) {
+      await window.cricAuth.signOut();
+    }
+    localStorage.removeItem('cricpulse_team');
+    // Hard redirect back to login
+    window.location.replace(window.location.pathname);
+  } catch(err) {
+    console.error("Sign out error", err);
+  }
+};
 
 async function enterApp(teamAbbr) {
   window.currentUser.team = teamAbbr;
