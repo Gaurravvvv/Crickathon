@@ -177,32 +177,71 @@ class PredictionEngine {
     });
   }
 
-  /** Live mode: handler for score diffs from LiveMatchUI */
+  /** Live mode: wire up handlers */
   _setupLiveHandler() {
+    this._prevLiveScore = null;  // store previous snapshot
+    this._waitingForResult = false;
+
     // Called when score actually changes (from LiveMatchUI._onScoreDiff)
     window.livePredictionHandler = (diff) => {
-      this.isLiveMode = true;
-      this._lockPredictions();
-
       // Feed ball-by-ball tracker
       this.bbbTracker.addLiveDiff(diff);
-
-      // Check prediction
-      this._checkLivePrediction(diff);
-
-      // Restart countdown for next prediction window after showing result
-      setTimeout(() => this._startLiveCountdown(), 3000);
     };
 
-    // Called every 30s with full match data (even when score hasn't changed)
+    // Called every 60s with full match data
     window.liveMatchUpdateHandler = (parsed) => {
-      if (!this.isLiveMode) {
-        this.isLiveMode = true;
-        // First time entering live mode — start the prediction cycle
+      this.isLiveMode = true;
+      this._updateLiveScoreDisplay(parsed);
+
+      // Get active innings score
+      const i1 = parsed.score.innings1, i2 = parsed.score.innings2;
+      const activeInn = i2.runs > 0 ? i2 : i1;
+      const currentSnapshot = { runs: activeInn.runs, wickets: activeInn.wickets, overs: activeInn.overs };
+
+      // If we're waiting for a result (user made a prediction or timer ran out)
+      if (this._waitingForResult && this._prevLiveScore) {
+        this._waitingForResult = false;
+        const runsDiff = currentSnapshot.runs - this._prevLiveScore.runs;
+        const wicketsDiff = currentSnapshot.wickets - this._prevLiveScore.wickets;
+
+        // Determine what happened
+        let result = 'dot';
+        let commentary = '';
+        if (wicketsDiff > 0) {
+          result = 'wicket';
+          commentary = `WICKET! Score: ${currentSnapshot.runs}/${currentSnapshot.wickets} (${currentSnapshot.overs} ov)`;
+        } else if (runsDiff >= 6) {
+          result = '6';
+          commentary = `BIG HITTING! ${runsDiff} runs scored! ${currentSnapshot.runs}/${currentSnapshot.wickets}`;
+        } else if (runsDiff >= 4) {
+          result = '4';
+          commentary = `FOUR! ${runsDiff} runs added. ${currentSnapshot.runs}/${currentSnapshot.wickets}`;
+        } else if (runsDiff === 3) {
+          result = '3';
+          commentary = `Three runs. ${currentSnapshot.runs}/${currentSnapshot.wickets}`;
+        } else if (runsDiff === 2) {
+          result = '2';
+          commentary = `Two runs. ${currentSnapshot.runs}/${currentSnapshot.wickets}`;
+        } else if (runsDiff === 1) {
+          result = '1';
+          commentary = `Single. ${currentSnapshot.runs}/${currentSnapshot.wickets}`;
+        } else {
+          commentary = `Dot ball / maiden. ${currentSnapshot.runs}/${currentSnapshot.wickets}`;
+        }
+
+        // Evaluate user's prediction
+        this._evaluatePrediction(result, commentary);
+
+        // Restart prediction cycle after showing result
+        setTimeout(() => {
+          this._prevLiveScore = currentSnapshot;
+          this._startLiveCountdown();
+        }, 4000);
+      } else if (!this._prevLiveScore) {
+        // First poll — store baseline and start predictions
+        this._prevLiveScore = currentSnapshot;
         this._startLiveCountdown();
       }
-      // Update the score display in prediction card
-      this._updateLiveScoreDisplay(parsed);
     };
   }
 
@@ -219,6 +258,7 @@ class PredictionEngine {
 
   _startLiveCountdown() {
     this._unlockPredictions();
+    this._waitingForResult = false;
     let seconds = 30;
     const fg = document.getElementById('countdown-fg');
     const text = document.getElementById('countdown-text');
@@ -240,21 +280,19 @@ class PredictionEngine {
       if (seconds <= 3) this._lockPredictions();
       if (seconds <= 0) {
         clearInterval(this.liveCountdown);
-        // If no score change arrived, show "waiting" and restart
+        // Lock in prediction and wait for next API poll to evaluate
+        this._waitingForResult = true;
         const resultEl = document.getElementById('predict-result');
         if (resultEl) {
           resultEl.style.display = 'block';
-          resultEl.innerHTML = `<div class="result-reveal" style="border-color: var(--text-muted);"><div class="result-emoji">⏳</div><div class="result-text">Waiting for next ball from live feed...</div><div class="result-sub">Predictions will reopen shortly</div></div>`;
+          resultEl.innerHTML = `<div class="result-reveal" style="border-color: var(--accent);"><div class="result-emoji">⏳</div><div class="result-text">Prediction locked! Waiting for live score update...</div><div class="result-sub">${this.selectedPrediction ? 'You predicted: ' + this.selectedPrediction.toUpperCase() : 'No prediction made'}</div></div>`;
         }
-        // Restart countdown after brief pause
-        setTimeout(() => this._startLiveCountdown(), 5000);
       }
     }, 1000);
   }
 
-  _checkLivePrediction(diff) {
+  _evaluatePrediction(result, commentary) {
     this.totalPredictions++;
-    const result = diff.result;
     const resultEl = document.getElementById('predict-result');
     if (!resultEl) return;
 
@@ -267,15 +305,21 @@ class PredictionEngine {
       this.correctPredictions++;
       if (window.soundFX) window.soundFX.success();
       resultEl.style.display = 'block';
-      resultEl.innerHTML = `<div class="result-reveal" style="border-color: var(--accent);"><div class="result-emoji">${emojiMap[result]||'✅'}</div><div class="result-text">${diff.commentary}</div><div class="result-sub">🎉 Correct! +${earned} pts (Total: ${this.points})</div></div>`;
+      resultEl.innerHTML = `<div class="result-reveal" style="border-color: var(--accent);"><div class="result-emoji">${emojiMap[result]||'✅'}</div><div class="result-text">${commentary}</div><div class="result-sub">🎉 Correct! +${earned} pts (Total: ${this.points})</div></div>`;
     } else if (!this.selectedPrediction) {
       resultEl.style.display = 'block';
-      resultEl.innerHTML = `<div class="result-reveal" style="border-color: var(--text-muted);"><div class="result-emoji">${emojiMap[result]||'🏏'}</div><div class="result-text">${diff.commentary}</div><div class="result-sub">⏰ No prediction made — select before time runs out!</div></div>`;
+      resultEl.innerHTML = `<div class="result-reveal" style="border-color: var(--text-muted);"><div class="result-emoji">${emojiMap[result]||'🏏'}</div><div class="result-text">${commentary}</div><div class="result-sub">⏰ No prediction made — be faster next time!</div></div>`;
     } else {
       if (window.soundFX) window.soundFX.fail();
       resultEl.style.display = 'block';
-      resultEl.innerHTML = `<div class="result-reveal" style="border-color: #ff6b6b;"><div class="result-emoji">${emojiMap[result]||'❌'}</div><div class="result-text">${diff.commentary}</div><div class="result-sub">❌ Wrong! You predicted ${this.selectedPrediction}, it was ${result}</div></div>`;
+      resultEl.innerHTML = `<div class="result-reveal" style="border-color: #ff6b6b;"><div class="result-emoji">${emojiMap[result]||'❌'}</div><div class="result-text">${commentary}</div><div class="result-sub">❌ Wrong! You predicted ${this.selectedPrediction}, it was ${result}</div></div>`;
     }
+
+    // Sound effects for big events
+    if (result === '6' && window.soundFX) window.soundFX.bigSix();
+    else if (result === '4' && window.soundFX) window.soundFX.cheer();
+    else if (result === 'wicket' && window.soundFX) window.soundFX.wicket();
+
     this._updateLeaderboard();
   }
 
