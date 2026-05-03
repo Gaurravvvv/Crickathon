@@ -50,7 +50,16 @@
     <!-- TOP BAR -->
     <header class="topbar" id="topbar">
       <div class="topbar-left">
-        <span class="material-icons-round topbar-logo-icon">sports_cricket</span>
+        <div class="user-profile-wrap">
+          <div class="user-avatar" id="user-avatar">
+            <span class="material-icons-round">person</span>
+          </div>
+          <div class="user-dropdown" id="user-dropdown">
+            <button id="btn-sign-out" class="btn-dropdown" onclick="window.doSignOut()">
+              <span class="material-icons-round">logout</span> Sign Out
+            </button>
+          </div>
+        </div>
         <span class="topbar-brand">Cric<span class="accent">Pulse</span></span>
       </div>
       <div class="topbar-center" id="score-ticker">
@@ -66,16 +75,6 @@
         <div class="ticker-overs" id="ticker-overs">16.3 ov</div>
       </div>
       <div class="topbar-right">
-        <div class="user-profile-wrap">
-          <div class="user-avatar" id="user-avatar">
-            <span class="material-icons-round">person</span>
-          </div>
-          <div class="user-dropdown" id="user-dropdown">
-            <button id="btn-sign-out" class="btn-dropdown" onclick="window.doSignOut()">
-              <span class="material-icons-round">logout</span> Sign Out
-            </button>
-          </div>
-        </div>
       </div>
     </header>
 
