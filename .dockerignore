@@ -1,0 +1,7 @@
+.git
+.gitignore
+.firebaserc
+firebase.json
+node_modules
+*.md
+.planning
