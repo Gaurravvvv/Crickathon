@@ -131,13 +131,24 @@ function setupUserMenu() {
     }
   });
 
+  // Remove old listeners to prevent duplicates if called multiple times
+  const newBtn = btnSignOut.cloneNode(true);
+  btnSignOut.parentNode.replaceChild(newBtn, btnSignOut);
+
   // Sign out
-  btnSignOut.onclick = async () => {
-    await window.cricAuth.signOut();
-    localStorage.removeItem('cricpulse_team');
-    // Reload page to reset state completely
-    window.location.reload();
-  };
+  newBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log("Signing out...");
+    try {
+      await window.cricAuth.signOut();
+      localStorage.removeItem('cricpulse_team');
+      // Force reload to login screen
+      window.location.href = window.location.pathname;
+    } catch(err) {
+      console.error("Sign out error", err);
+    }
+  });
 }
 
 async function enterApp(teamAbbr) {
