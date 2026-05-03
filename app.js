@@ -161,7 +161,7 @@ async function initializeApp(teamAbbr) {
   skribbl.init();
 
   // 6. Check for live match mode
-  const cricApiKey = params.get('cric_key');
+  const cricApiKey = params.get('cric_key') || 'b444b3ea-28fb-4cdb-9dea-eca49df8f3e1';
   if (cricApiKey) {
     // Live mode — use real match data
     window.liveMatchUI = new LiveMatchUI();
