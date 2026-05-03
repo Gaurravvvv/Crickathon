@@ -179,6 +179,7 @@ class PredictionEngine {
 
   /** Live mode: handler for score diffs from LiveMatchUI */
   _setupLiveHandler() {
+    // Called when score actually changes (from LiveMatchUI._onScoreDiff)
     window.livePredictionHandler = (diff) => {
       this.isLiveMode = true;
       this._lockPredictions();
@@ -189,9 +190,31 @@ class PredictionEngine {
       // Check prediction
       this._checkLivePrediction(diff);
 
-      // Restart countdown for next window
-      setTimeout(() => this._startLiveCountdown(), 4000);
+      // Restart countdown for next prediction window after showing result
+      setTimeout(() => this._startLiveCountdown(), 3000);
     };
+
+    // Called every 30s with full match data (even when score hasn't changed)
+    window.liveMatchUpdateHandler = (parsed) => {
+      if (!this.isLiveMode) {
+        this.isLiveMode = true;
+        // First time entering live mode — start the prediction cycle
+        this._startLiveCountdown();
+      }
+      // Update the score display in prediction card
+      this._updateLiveScoreDisplay(parsed);
+    };
+  }
+
+  /** Show live score in the prediction card header */
+  _updateLiveScoreDisplay(parsed) {
+    const bn = document.getElementById('ball-number');
+    const bi = document.getElementById('bowler-info');
+    const i1 = parsed.score.innings1, i2 = parsed.score.innings2;
+    const activeInn = i2.runs > 0 ? i2 : i1;
+
+    if (bn) bn.textContent = `🔴 LIVE — ${activeInn.runs}/${activeInn.wickets} (${activeInn.overs} ov)`;
+    if (bi) bi.innerHTML = `<span class="material-icons-round">sports</span> ${parsed.team1.abbr} vs ${parsed.team2.abbr} — ${parsed.status}`;
   }
 
   _startLiveCountdown() {
@@ -215,7 +238,17 @@ class PredictionEngine {
       fg.style.strokeDashoffset = circumference * (1 - seconds / 30);
       if (seconds <= 5) { fg.style.stroke = '#ff6b6b'; text.style.color = '#ff6b6b'; }
       if (seconds <= 3) this._lockPredictions();
-      if (seconds <= 0) clearInterval(this.liveCountdown);
+      if (seconds <= 0) {
+        clearInterval(this.liveCountdown);
+        // If no score change arrived, show "waiting" and restart
+        const resultEl = document.getElementById('predict-result');
+        if (resultEl) {
+          resultEl.style.display = 'block';
+          resultEl.innerHTML = `<div class="result-reveal" style="border-color: var(--text-muted);"><div class="result-emoji">⏳</div><div class="result-text">Waiting for next ball from live feed...</div><div class="result-sub">Predictions will reopen shortly</div></div>`;
+        }
+        // Restart countdown after brief pause
+        setTimeout(() => this._startLiveCountdown(), 5000);
+      }
     }, 1000);
   }
 
@@ -235,10 +268,13 @@ class PredictionEngine {
       if (window.soundFX) window.soundFX.success();
       resultEl.style.display = 'block';
       resultEl.innerHTML = `<div class="result-reveal" style="border-color: var(--accent);"><div class="result-emoji">${emojiMap[result]||'✅'}</div><div class="result-text">${diff.commentary}</div><div class="result-sub">🎉 Correct! +${earned} pts (Total: ${this.points})</div></div>`;
+    } else if (!this.selectedPrediction) {
+      resultEl.style.display = 'block';
+      resultEl.innerHTML = `<div class="result-reveal" style="border-color: var(--text-muted);"><div class="result-emoji">${emojiMap[result]||'🏏'}</div><div class="result-text">${diff.commentary}</div><div class="result-sub">⏰ No prediction made — select before time runs out!</div></div>`;
     } else {
       if (window.soundFX) window.soundFX.fail();
       resultEl.style.display = 'block';
-      resultEl.innerHTML = `<div class="result-reveal" style="border-color: #ff6b6b;"><div class="result-emoji">${emojiMap[result]||'❌'}</div><div class="result-text">${diff.commentary}</div><div class="result-sub">${this.selectedPrediction ? '❌ Wrong!' : '⏰ No prediction!'}</div></div>`;
+      resultEl.innerHTML = `<div class="result-reveal" style="border-color: #ff6b6b;"><div class="result-emoji">${emojiMap[result]||'❌'}</div><div class="result-text">${diff.commentary}</div><div class="result-sub">❌ Wrong! You predicted ${this.selectedPrediction}, it was ${result}</div></div>`;
     }
     this._updateLeaderboard();
   }

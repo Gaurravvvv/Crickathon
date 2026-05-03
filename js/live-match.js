@@ -255,9 +255,13 @@ class LiveMatchUI {
   _onMatchUpdate(parsed) {
     this.matchData = parsed;
     this._updateTicker(parsed);
-    this._updatePredictionUI(parsed);
     this._feedChatbotContext(parsed);
     this._updateFloatingScore(parsed);
+
+    // Feed prediction engine with live score (starts countdown on first call)
+    if (window.liveMatchUpdateHandler) {
+      window.liveMatchUpdateHandler(parsed);
+    }
   }
 
   // ---- Called when score actually changed ----
