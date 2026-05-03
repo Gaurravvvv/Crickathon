@@ -5,7 +5,7 @@ class LiveMatchProvider {
   constructor(apiKey) {
     this.apiKey = apiKey;
     this.baseUrl = 'https://api.cricapi.com/v1';
-    this.pollInterval = 30000;
+    this.pollInterval = 60000;
     this.timer = null;
     this.selectedMatchId = null;
     this.previousParsed = null;
@@ -24,14 +24,23 @@ class LiveMatchProvider {
       const res = await fetch(url);
       if (!res.ok) throw new Error(`API ${res.status}`);
       const data = await res.json();
-      if (data.status !== 'success') throw new Error(data.info || 'API error');
+      if (data.status !== 'success') {
+        const reason = data.reason || data.info || 'API error';
+        // Rate limit detection
+        if (reason.toLowerCase().includes('blocked')) {
+          console.warn('⏳ API rate limited:', reason);
+          this.emit('error', { type: 'ratelimit', message: `API rate limited: ${reason}. Will auto-retry.` });
+          return this.matchList; // return cached list
+        }
+        throw new Error(reason);
+      }
       this.matchList = (data.data || []).filter(m => m.matchStarted && !m.matchEnded);
       this.emit('matchListUpdated', this.matchList);
       return this.matchList;
     } catch (err) {
       console.error('Live fetch failed:', err);
       this.emit('error', { type: 'fetch', message: err.message });
-      return [];
+      return this.matchList.length > 0 ? this.matchList : [];
     }
   }
 
