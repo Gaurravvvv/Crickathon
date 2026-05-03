@@ -162,12 +162,15 @@ class LiveMatchUI {
   constructor() {
     this.provider = null;
     this.isLive = false;
-    this.matchData = null;  // current parsed match
+    this.matchData = null;
+    this.pickerShown = false; // only show picker once
   }
 
   init(apiKey) {
     this.provider = new LiveMatchProvider(apiKey);
-    this.provider.on('matchListUpdated', m => this._showMatchPicker(m));
+    this.provider.on('matchListUpdated', m => {
+      if (!this.isLive && !this.pickerShown) this._showMatchPicker(m);
+    });
     this.provider.on('matchUpdate', p => this._onMatchUpdate(p));
     this.provider.on('scoreDiff', d => this._onScoreDiff(d));
     this.provider.on('error', e => { console.warn('Live error:', e); showCommentary(`⚠️ ${e.message}`); });
@@ -176,10 +179,12 @@ class LiveMatchUI {
 
   startTracking(matchId) {
     this.isLive = true;
+    this.pickerShown = true;
     this.provider.selectMatch(matchId);
     this.provider.start();
     if (window.matchEngine) window.matchEngine.pause();
     this._showLiveIndicator();
+    this._createFloatingScoreBox();
   }
 
   stopTracking() {
@@ -195,6 +200,7 @@ class LiveMatchUI {
     this._updateTicker(parsed);
     this._updatePredictionUI(parsed);
     this._feedChatbotContext(parsed);
+    this._updateFloatingScore(parsed);
   }
 
   // ---- Called when score actually changed ----
@@ -269,6 +275,32 @@ class LiveMatchUI {
     document.getElementById('score-ticker')?.prepend(el);
   }
   _hideLiveIndicator() { document.getElementById('live-indicator')?.remove(); }
+
+  // ---- Floating score box (top-right) ----
+  _createFloatingScoreBox() {
+    if (document.getElementById('live-score-box')) return;
+    const box = document.createElement('div');
+    box.id = 'live-score-box';
+    box.className = 'live-score-box';
+    box.innerHTML = `
+      <div class="lsb-dot"></div>
+      <div class="lsb-teams" id="lsb-teams">— vs —</div>
+      <div class="lsb-score" id="lsb-score">0/0 (0.0)</div>
+      <div class="lsb-status" id="lsb-status"></div>
+    `;
+    document.body.appendChild(box);
+  }
+
+  _updateFloatingScore(p) {
+    const teams = document.getElementById('lsb-teams');
+    const score = document.getElementById('lsb-score');
+    const status = document.getElementById('lsb-status');
+    if (!teams) return;
+    teams.textContent = `${p.team1.abbr} vs ${p.team2.abbr}`;
+    const active = p.score.innings2.runs > 0 ? p.score.innings2 : p.score.innings1;
+    score.textContent = `${active.runs}/${active.wickets} (${active.overs} ov)`;
+    status.textContent = p.status;
+  }
 
   // ---- Match picker ----
   _showMatchPicker(matches) {
