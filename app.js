@@ -107,7 +107,7 @@ function updateUserAvatar(user) {
     avatarBtn.innerHTML = `<span class="material-icons-round">person</span>`;
   }
   avatarBtn.title = user.name || 'User';
-  
+
   setupUserMenu();
 }
 
@@ -142,7 +142,7 @@ window.doSignOut = async () => {
     localStorage.removeItem('cricpulse_team');
     // Hard redirect back to login
     window.location.replace(window.location.pathname);
-  } catch(err) {
+  } catch (err) {
     console.error("Sign out error", err);
   }
 };
@@ -199,7 +199,7 @@ async function initializeApp(teamAbbr) {
   skribbl.init();
 
   // 6. Check for live match mode
-  const cricApiKey = params.get('cric_key') || '18d5c960-c0a7-45a2-9a06-4036e0cf5d0c';
+  const cricApiKey = params.get('cric_key') || 'f60ca107-4500-40e5-aa54-2eafa7250ffd';
   if (cricApiKey) {
     // Live mode — use real match data
     window.liveMatchUI = new LiveMatchUI();
