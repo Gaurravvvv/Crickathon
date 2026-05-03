@@ -13,6 +13,9 @@ class LiveMatchProvider {
     this.listeners = {};
     this.isRunning = false;
     this.matchList = [];
+    this.scorecardData = null;   // detailed batting/bowling
+    this.scorecardText = '';     // formatted for AI context
+    this.scorecardTimer = null;
   }
 
   async fetchCurrentMatches() {
@@ -32,10 +35,64 @@ class LiveMatchProvider {
     }
   }
 
+  async fetchScorecard(matchId) {
+    try {
+      const url = `${this.baseUrl}/match_scorecard?apikey=${this.apiKey}&id=${matchId}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`Scorecard API ${res.status}`);
+      const data = await res.json();
+      if (data.status !== 'success' || !data.data) throw new Error(data.info || 'No scorecard');
+
+      this.scorecardData = data.data;
+      this.scorecardText = this._formatScorecard(data.data);
+      this.emit('scorecardUpdated', this.scorecardText);
+      return this.scorecardText;
+    } catch (err) {
+      console.warn('Scorecard fetch failed (may need paid plan):', err.message);
+      this.scorecardText = '';
+      return '';
+    }
+  }
+
+  _formatScorecard(sc) {
+    let text = '';
+    // Process each innings scorecard
+    const innings = sc.scorecard || sc.innings || [];
+    innings.forEach((inn, idx) => {
+      const innLabel = inn.inning || `Innings ${idx + 1}`;
+      text += `\n${innLabel}:\n`;
+
+      // Batting
+      if (inn.batting && inn.batting.length > 0) {
+        text += 'Batting: ';
+        text += inn.batting.map(b => {
+          const howOut = b['dismissal-text'] || b.dismissal || b.howOut || 'not out';
+          return `${b.batsman?.name || b.batsman || '?'} ${b.r || 0}(${b.b || 0}b) [${howOut}]`;
+        }).join(', ');
+        text += '\n';
+      }
+
+      // Bowling
+      if (inn.bowling && inn.bowling.length > 0) {
+        text += 'Bowling: ';
+        text += inn.bowling.map(b => {
+          return `${b.bowler?.name || b.bowler || '?'} ${b.o || 0}ov ${b.w || 0}wkt/${b.r || 0}runs`;
+        }).join(', ');
+        text += '\n';
+      }
+    });
+    return text.trim();
+  }
+
   selectMatch(matchId) {
     this.selectedMatchId = matchId;
     this.previousParsed = null;
     this.currentParsed = null;
+
+    // Fetch scorecard immediately + every 60s
+    this.fetchScorecard(matchId);
+    if (this.scorecardTimer) clearInterval(this.scorecardTimer);
+    this.scorecardTimer = setInterval(() => this.fetchScorecard(matchId), 60000);
   }
 
   start() {
@@ -259,10 +316,17 @@ class LiveMatchUI {
   _feedChatbotContext(p) {
     if (!window.chatbotInstance) return;
     const i1 = p.score.innings1, i2 = p.score.innings2;
-    window.chatbotInstance.matchContext =
+    const scorecardInfo = this.provider.scorecardText || '';
+    let ctx =
       `LIVE IPL Match: ${p.team1.name} (${i1.runs}/${i1.wickets}, ${i1.overs} ov) vs ` +
       `${p.team2.name} (${i2.runs}/${i2.wickets}, ${i2.overs} ov). ` +
       `Status: ${p.status}. Venue: ${p.venue}`;
+
+    if (scorecardInfo) {
+      ctx += `\n\nDETAILED SCORECARD (use this to answer player-specific questions):\n${scorecardInfo}`;
+    }
+
+    window.chatbotInstance.matchContext = ctx;
   }
 
   // ---- Live indicator ----
