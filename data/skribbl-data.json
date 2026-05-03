@@ -1,0 +1,134 @@
+[
+  {
+    "type": "achievement",
+    "answer": "Sachin Tendulkar",
+    "hints": [
+      "Scored 100 international centuries",
+      "Played 200 Test matches",
+      "Right-handed batsman from Mumbai",
+      "Known as the 'God of Cricket'"
+    ]
+  },
+  {
+    "type": "achievement",
+    "answer": "MS Dhoni",
+    "hints": [
+      "Wore jersey number 7",
+      "Won the 2011 World Cup as captain",
+      "Famous for helicopter shot",
+      "Known as 'Captain Cool' from Ranchi"
+    ]
+  },
+  {
+    "type": "achievement",
+    "answer": "Virat Kohli",
+    "hints": [
+      "Scored 973 runs in IPL 2016 season",
+      "Jersey number 18",
+      "Led India to U-19 World Cup victory in 2008",
+      "Plays for Royal Challengers Bangalore"
+    ]
+  },
+  {
+    "type": "achievement",
+    "answer": "Rohit Sharma",
+    "hints": [
+      "Scored 264 in an ODI — highest individual score",
+      "Has three ODI double centuries",
+      "Right-handed batsman, Mumbai Indians captain",
+      "Known as 'The Hitman'"
+    ]
+  },
+  {
+    "type": "achievement",
+    "answer": "Jasprit Bumrah",
+    "hints": [
+      "Unorthodox bowling action — unusual arm angle",
+      "Best economy rate in IPL death overs",
+      "From Ahmedabad, Gujarat",
+      "India's No.1 fast bowler, plays for MI"
+    ]
+  },
+  {
+    "type": "achievement",
+    "answer": "AB de Villiers",
+    "hints": [
+      "Scored the fastest ODI century — 31 balls",
+      "Played for South Africa",
+      "Known as 'Mr. 360' for his unorthodox shots",
+      "Played for RCB in the IPL"
+    ]
+  },
+  {
+    "type": "jersey",
+    "answer": "MS Dhoni",
+    "jersey": 7,
+    "team": "CSK",
+    "hints": ["Jersey #7", "Captain of CSK", "Wicketkeeper-batsman"]
+  },
+  {
+    "type": "jersey",
+    "answer": "Virat Kohli",
+    "jersey": 18,
+    "team": "RCB",
+    "hints": ["Jersey #18", "Right-hand batsman", "Former India captain"]
+  },
+  {
+    "type": "jersey",
+    "answer": "Rohit Sharma",
+    "jersey": 45,
+    "team": "MI",
+    "hints": ["Jersey #45", "Opening batsman", "Current India captain"]
+  },
+  {
+    "type": "jersey",
+    "answer": "Ravindra Jadeja",
+    "jersey": 8,
+    "team": "CSK",
+    "hints": ["Jersey #8", "Left-arm spin all-rounder", "Known as 'Sir Jadeja'"]
+  },
+  {
+    "type": "jersey",
+    "answer": "Hardik Pandya",
+    "jersey": 33,
+    "team": "MI",
+    "hints": ["Jersey #33", "Fast-bowling all-rounder", "From Baroda, Gujarat"]
+  },
+  {
+    "type": "achievement",
+    "answer": "Shane Warne",
+    "hints": [
+      "Took 708 Test wickets",
+      "Bowled the 'Ball of the Century' to Mike Gatting",
+      "Legendary Australian leg-spinner",
+      "First captain and mentor of Rajasthan Royals"
+    ]
+  },
+  {
+    "type": "achievement",
+    "answer": "Yuvraj Singh",
+    "hints": [
+      "Hit 6 sixes in a single over in T20 World Cup",
+      "Player of the Tournament in 2011 World Cup",
+      "Left-handed batsman and slow left-arm spinner",
+      "Cancer survivor who returned to international cricket"
+    ]
+  },
+  {
+    "type": "achievement",
+    "answer": "Suryakumar Yadav",
+    "hints": [
+      "ICC Men's T20I Cricketer of the Year 2022 & 2023",
+      "Known for his 360-degree batting in T20s",
+      "Played for Mumbai Indians",
+      "Jersey #63, right-hand batsman"
+    ]
+  },
+  {
+    "type": "jersey",
+    "answer": "Suresh Raina",
+    "jersey": 3,
+    "team": "CSK",
+    "hints": ["Jersey #3", "Mr. IPL — first to 5000 IPL runs", "Left-handed batsman from UP"]
+  }
+]

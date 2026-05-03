@@ -1,0 +1,118 @@
+[
+  {
+    "id": 1,
+    "tag": "match",
+    "question": "Will Suryakumar Yadav hit a fifty today?",
+    "options": ["Definitely Yes 🔥", "Probably No 😬", "He'll get out at 49 😂"],
+    "votes": [312, 187, 98],
+    "comments": [
+      { "name": "CricFan07", "text": "SKY is in insane form this season!" },
+      { "name": "MIFanatic", "text": "Pathirana will get him early, bet on it." }
+    ]
+  },
+  {
+    "id": 2,
+    "tag": "fun",
+    "question": "Which stadium has the BEST food? 🍔",
+    "options": ["Wankhede, Mumbai", "Chinnaswamy, Bangalore", "Eden Gardens, Kolkata", "Chepauk, Chennai"],
+    "votes": [245, 189, 167, 312],
+    "comments": [
+      { "name": "FoodieFan", "text": "Chepauk filter coffee is unbeatable ☕" }
+    ]
+  },
+  {
+    "id": 3,
+    "tag": "match",
+    "question": "Who will be Player of the Match today?",
+    "options": ["MS Dhoni 🦁", "Jasprit Bumrah 🎯", "Hardik Pandya 💪", "Ruturaj Gaikwad 🏏"],
+    "votes": [423, 287, 356, 198],
+    "comments": []
+  },
+  {
+    "id": 4,
+    "tag": "fun",
+    "question": "Better celebration: Kohli's aggression or Dhoni's calm? 😎",
+    "options": ["Kohli's raw energy! 🔥", "Dhoni's cool finish 🧊", "Both are GOAT-level"],
+    "votes": [567, 489, 234],
+    "comments": [
+      { "name": "RetroFan", "text": "Dhoni walking off without celebrating after winning the WC... goosebumps." }
+    ]
+  },
+  {
+    "id": 5,
+    "tag": "match",
+    "question": "Will there be a Super Over today? ⚡",
+    "options": ["Yes, it's gonna be THAT close!", "No way, one team will dominate"],
+    "votes": [156, 344],
+    "comments": []
+  },
+  {
+    "id": 6,
+    "tag": "fun",
+    "question": "Best IPL commentary duo? 🎙️",
+    "options": ["Harsha Bhogle + Ravi Shastri", "Aakash Chopra + Deep Dasgupta", "Irfan Pathan + Sanjay Manjrekar"],
+    "votes": [412, 278, 89],
+    "comments": [
+      { "name": "CommentaryKing", "text": "Harsha Bhogle is the undisputed GOAT of cricket commentary!" }
+    ]
+  },
+  {
+    "id": 7,
+    "tag": "match",
+    "question": "How many sixes will MI hit in the last 4 overs?",
+    "options": ["0-2 (CSK bowling too tight)", "3-5 (MI will fight)", "6+ (CARNAGE incoming! 💥)"],
+    "votes": [189, 312, 245],
+    "comments": [
+      { "name": "SixerKing", "text": "Tim David alone can hit 4 sixes, easy." }
+    ]
+  },
+  {
+    "id": 8,
+    "tag": "fun",
+    "question": "If you could pick ONE cricketer to bat for your life, who? 🏏",
+    "options": ["Sachin Tendulkar", "Virat Kohli", "MS Dhoni", "AB de Villiers"],
+    "votes": [534, 489, 612, 378],
+    "comments": [
+      { "name": "ThalaFan", "text": "Dhoni in a final? He's literally unbeatable under pressure. 🦁" },
+      { "name": "ABFan", "text": "ABD could bat upside down and still score a century 😂" }
+    ]
+  },
+  {
+    "id": 9,
+    "tag": "match",
+    "question": "Will Dhoni come in to bat today? 🦁",
+    "options": ["Yes, and he'll finish it! 🔥", "No, not needed today", "Yes, but too late to save it"],
+    "votes": [567, 123, 178],
+    "comments": [
+      { "name": "WhistlePodu", "text": "Thala for a reason! 💛" }
+    ]
+  },
+  {
+    "id": 10,
+    "tag": "fun",
+    "question": "Most dramatic IPL moment EVER? 🎬",
+    "options": ["Dhoni's 2011 WC six 🏆", "Kohli's 973 runs in 2016", "KKR's comeback in 2014 final", "Stokes' last over in 2019 WC"],
+    "votes": [789, 234, 345, 456],
+    "comments": []
+  },
+  {
+    "id": 11,
+    "tag": "match",
+    "question": "Prediction: What will be MI's final score?",
+    "options": ["Under 170 (CSK dominates)", "170-186 (Close but short)", "187+ (MI chases it down! 🎉)"],
+    "votes": [234, 345, 278],
+    "comments": [
+      { "name": "AnalystPro", "text": "Required rate is 14+, that's too steep. CSK have this." }
+    ]
+  },
+  {
+    "id": 12,
+    "tag": "fun",
+    "question": "Which IPL franchise has the best jersey design? 👕",
+    "options": ["CSK Yellow 💛", "RCB Red & Black ❤️", "MI Blue 💙", "RR Pink 💖", "KKR Purple 💜"],
+    "votes": [345, 289, 312, 178, 234],
+    "comments": [
+      { "name": "FashionCric", "text": "CSK yellow is iconic. You see it and you KNOW." }
+    ]
+  }
+]

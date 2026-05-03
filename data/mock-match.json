@@ -1,0 +1,68 @@
+{
+  "matchInfo": {
+    "id": "ipl-2025-final",
+    "title": "IPL 2025 — Qualifier 1",
+    "venue": "MA Chidambaram Stadium, Chennai",
+    "team1": {
+      "abbr": "CSK",
+      "name": "Chennai Super Kings",
+      "players": [
+        { "name": "Ruturaj Gaikwad", "role": "batsman", "jersey": 31 },
+        { "name": "Devon Conway", "role": "batsman", "jersey": 92 },
+        { "name": "Moeen Ali", "role": "allrounder", "jersey": 18 },
+        { "name": "Shivam Dube", "role": "allrounder", "jersey": 25 },
+        { "name": "Ravindra Jadeja", "role": "allrounder", "jersey": 8 },
+        { "name": "MS Dhoni", "role": "wicketkeeper", "jersey": 7 },
+        { "name": "Deepak Chahar", "role": "bowler", "jersey": 90 },
+        { "name": "Tushar Deshpande", "role": "bowler", "jersey": 12 },
+        { "name": "Matheesha Pathirana", "role": "bowler", "jersey": 34 },
+        { "name": "Maheesh Theekshana", "role": "bowler", "jersey": 30 },
+        { "name": "Rachin Ravindra", "role": "allrounder", "jersey": 17 }
+      ]
+    },
+    "team2": {
+      "abbr": "MI",
+      "name": "Mumbai Indians",
+      "players": [
+        { "name": "Rohit Sharma", "role": "batsman", "jersey": 45 },
+        { "name": "Ishan Kishan", "role": "wicketkeeper", "jersey": 32 },
+        { "name": "Suryakumar Yadav", "role": "batsman", "jersey": 63 },
+        { "name": "Tilak Varma", "role": "batsman", "jersey": 9 },
+        { "name": "Hardik Pandya", "role": "allrounder", "jersey": 33 },
+        { "name": "Tim David", "role": "batsman", "jersey": 55 },
+        { "name": "Jasprit Bumrah", "role": "bowler", "jersey": 93 },
+        { "name": "Piyush Chawla", "role": "bowler", "jersey": 29 },
+        { "name": "Gerald Coetzee", "role": "bowler", "jersey": 14 },
+        { "name": "Akash Madhwal", "role": "bowler", "jersey": 47 },
+        { "name": "Romario Shepherd", "role": "allrounder", "jersey": 72 }
+      ]
+    }
+  },
+  "innings": {
+    "batting": "MI",
+    "bowling": "CSK",
+    "target": null
+  },
+  "balls": [
+    { "over": 17, "ball": 1, "bowler": "Matheesha Pathirana", "batsman": "Suryakumar Yadav", "result": "1",   "runs": 1, "commentary": "Worked away to mid-wicket, quick single taken." },
+    { "over": 17, "ball": 2, "bowler": "Matheesha Pathirana", "batsman": "Hardik Pandya",     "result": "dot", "runs": 0, "commentary": "Yorker length, dug out back to the bowler. Excellent delivery!" },
+    { "over": 17, "ball": 3, "bowler": "Matheesha Pathirana", "batsman": "Hardik Pandya",     "result": "4",   "runs": 4, "commentary": "FOUR! Slammed through extra cover! That's a statement shot!" },
+    { "over": 17, "ball": 4, "bowler": "Matheesha Pathirana", "batsman": "Hardik Pandya",     "result": "6",   "runs": 6, "commentary": "SIX! Massive hit over long-on! That's gone into the stands! 🔥" },
+    { "over": 17, "ball": 5, "bowler": "Matheesha Pathirana", "batsman": "Hardik Pandya",     "result": "dot", "runs": 0, "commentary": "Slower ball, beaten! Great variation from Pathirana." },
+    { "over": 17, "ball": 6, "bowler": "Matheesha Pathirana", "batsman": "Hardik Pandya",     "result": "2",   "runs": 2, "commentary": "Pushed to deep mid-wicket, good running between the wickets." },
+    { "over": 18, "ball": 1, "bowler": "Deepak Chahar",       "batsman": "Suryakumar Yadav",  "result": "wicket", "runs": 0, "wicketType": "caught", "fielder": "Ravindra Jadeja", "commentary": "WICKET! Caught at deep square leg! Jadeja takes a stunning catch! SKY has to go!" },
+    { "over": 18, "ball": 2, "bowler": "Deepak Chahar",       "batsman": "Tim David",         "result": "6",   "runs": 6, "commentary": "SIX on first ball! Tim David muscles it over cow corner! What power!" },
+    { "over": 18, "ball": 3, "bowler": "Deepak Chahar",       "batsman": "Tim David",         "result": "4",   "runs": 4, "commentary": "FOUR! Edges past the keeper to the boundary! Lucky but he'll take it!" },
+    { "over": 18, "ball": 4, "bowler": "Deepak Chahar",       "batsman": "Tim David",         "result": "1",   "runs": 1, "commentary": "Tapped to mid-on, single taken to rotate strike." },
+    { "over": 18, "ball": 5, "bowler": "Deepak Chahar",       "batsman": "Hardik Pandya",     "result": "drs", "runs": 0, "drsResult": "out", "wicketType": "lbw", "commentary": "DRS REVIEW! Pandya given out LBW! He reviews... Ball tracking shows... THREE REDS! OUT! The review is lost!" },
+    { "over": 18, "ball": 6, "bowler": "Deepak Chahar",       "batsman": "Romario Shepherd",  "result": "4",   "runs": 4, "commentary": "FOUR to end the over! Smashed through point! What a game!" }
+  ],
+  "initialScore": {
+    "runs": 142,
+    "wickets": 5,
+    "overs": "16.6",
+    "runRate": 8.48,
+    "target": 187,
+    "requiredRate": 14.33
+  }
+}

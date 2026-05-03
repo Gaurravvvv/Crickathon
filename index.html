@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CricPulse — Fan Live Companion</title>
+  <meta name="description" content="CricPulse: Your ultimate IPL match-day companion with live polls, trivia, predictions, and AI cricket chat." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ============ LOGIN SCREEN ============ -->
+  <div id="login-screen" class="screen active">
+    <div class="login-bg">
+      <div class="login-particles" id="particles"></div>
+      <div class="login-content">
+        <div class="login-logo-wrap">
+          <div class="login-logo">
+            <span class="material-icons-round logo-icon">sports_cricket</span>
+          </div>
+          <h1 class="login-title">Cric<span class="accent">Pulse</span></h1>
+          <p class="login-subtitle">Your Match-Day Companion</p>
+        </div>
+
+        <div class="team-select-wrap" id="team-select-wrap" style="display:none;">
+          <h2 class="team-select-title">Pick Your Team</h2>
+          <div class="team-grid" id="team-grid"></div>
+        </div>
+
+        <button class="btn-google" id="btn-google">
+          <svg class="google-svg" viewBox="0 0 24 24" width="22" height="22">
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+          </svg>
+          <span>Sign in with Google</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MAIN APP ============ -->
+  <div id="app-screen" class="screen">
+
+    <!-- TOP BAR -->
+    <header class="topbar" id="topbar">
+      <div class="topbar-left">
+        <span class="material-icons-round topbar-logo-icon">sports_cricket</span>
+        <span class="topbar-brand">Cric<span class="accent">Pulse</span></span>
+      </div>
+      <div class="topbar-center" id="score-ticker">
+        <div class="ticker-team">
+          <span class="ticker-team-name" id="ticker-team1">CSK</span>
+          <span class="ticker-team-score" id="ticker-score1">186/4</span>
+        </div>
+        <div class="ticker-vs">vs</div>
+        <div class="ticker-team">
+          <span class="ticker-team-name" id="ticker-team2">MI</span>
+          <span class="ticker-team-score" id="ticker-score2">142/6</span>
+        </div>
+        <div class="ticker-overs" id="ticker-overs">16.3 ov</div>
+      </div>
+      <div class="topbar-right">
+        <div class="user-avatar" id="user-avatar">
+          <span class="material-icons-round">person</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- DASHBOARD PAGES -->
+    <main class="main-content">
+
+      <!-- ===== TAB 1: POLLS ===== -->
+      <section class="tab-page active" id="tab-polls">
+        <div class="page-header">
+          <h2 class="page-title">Fan Polls <span class="emoji">🗳️</span></h2>
+          <p class="page-desc">Vote, comment, share your opinion!</p>
+        </div>
+        <div class="polls-feed" id="polls-feed"></div>
+      </section>
+
+      <!-- ===== TAB 2: SKRIBBL ===== -->
+      <section class="tab-page" id="tab-skribbl">
+        <div class="page-header">
+          <h2 class="page-title">Cricket Skribbl <span class="emoji">🎨</span></h2>
+          <p class="page-desc">Guess the cricketer from clues!</p>
+        </div>
+        <div class="skribbl-container" id="skribbl-container">
+          <div class="skribbl-lobby" id="skribbl-lobby">
+            <div class="lobby-card">
+              <span class="material-icons-round lobby-icon">group</span>
+              <h3>Join a Room</h3>
+              <p>Play with other fans — guess cricketers from pixelated photos, jersey numbers & achievements!</p>
+              <div class="lobby-rooms" id="lobby-rooms"></div>
+              <button class="btn-primary" id="btn-join-room">
+                <span class="material-icons-round">casino</span>
+                Join Random Room
+              </button>
+            </div>
+          </div>
+          <div class="skribbl-game" id="skribbl-game" style="display:none;">
+            <div class="game-top-bar">
+              <div class="game-round" id="game-round">Round 1/5</div>
+              <div class="game-timer" id="game-timer">
+                <span class="material-icons-round">timer</span>
+                <span id="timer-val">30</span>s
+              </div>
+              <div class="game-points" id="game-points">0 pts</div>
+            </div>
+            <div class="game-image-wrap">
+              <div class="game-image" id="game-image">
+                <div class="pixel-overlay" id="pixel-overlay"></div>
+                <img id="reveal-img" src="" alt="Guess who?" />
+              </div>
+              <div class="game-hints" id="game-hints"></div>
+            </div>
+            <div class="game-players-strip" id="game-players-strip"></div>
+            <div class="game-guess-bar">
+              <input type="text" id="guess-input" class="guess-input" placeholder="Type your guess..." />
+              <button class="btn-guess" id="btn-guess">
+                <span class="material-icons-round">send</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== TAB 3: PREDICTIONS ===== -->
+      <section class="tab-page" id="tab-predict">
+        <div class="page-header">
+          <h2 class="page-title">Predict the Ball <span class="emoji">🏏</span></h2>
+          <p class="page-desc">Guess what happens next!</p>
+        </div>
+        <div class="predict-container">
+          <div class="predict-match-card" id="predict-match-card">
+            <div class="predict-ball-info">
+              <div class="ball-number" id="ball-number">Ball 4 of Over 17</div>
+              <div class="bowler-info" id="bowler-info">
+                <span class="material-icons-round">sports</span>
+                Jasprit Bumrah → Ruturaj Gaikwad
+              </div>
+            </div>
+            <div class="predict-countdown" id="predict-countdown">
+              <svg class="countdown-ring" viewBox="0 0 100 100">
+                <circle class="countdown-bg" cx="50" cy="50" r="45"/>
+                <circle class="countdown-fg" id="countdown-fg" cx="50" cy="50" r="45"/>
+              </svg>
+              <div class="countdown-text" id="countdown-text">12</div>
+            </div>
+          </div>
+
+          <div class="predict-options" id="predict-options">
+            <button class="predict-btn" data-prediction="dot">
+              <span class="predict-emoji">⚫</span>
+              <span>Dot Ball</span>
+            </button>
+            <button class="predict-btn" data-prediction="1">
+              <span class="predict-emoji">1️⃣</span>
+              <span>Single</span>
+            </button>
+            <button class="predict-btn" data-prediction="2">
+              <span class="predict-emoji">2️⃣</span>
+              <span>Double</span>
+            </button>
+            <button class="predict-btn" data-prediction="4">
+              <span class="predict-emoji four">4️⃣</span>
+              <span>FOUR!</span>
+            </button>
+            <button class="predict-btn" data-prediction="6">
+              <span class="predict-emoji six">6️⃣</span>
+              <span>SIX!</span>
+            </button>
+            <button class="predict-btn wicket" data-prediction="wicket">
+              <span class="predict-emoji">🔴</span>
+              <span>WICKET!</span>
+            </button>
+          </div>
+
+          <div class="predict-result" id="predict-result" style="display:none;">
+            <div class="result-reveal" id="result-reveal"></div>
+          </div>
+
+          <!-- Ball-by-Ball Scorecard -->
+          <div class="bbb-scorecard" id="bbb-scorecard">
+            <div class="bbb-header">
+              <h3 class="bbb-title">
+                <span class="material-icons-round">timeline</span>
+                Ball-by-Ball
+              </h3>
+              <div class="bbb-score-summary" id="bbb-score-summary">— / — (0.0 ov)</div>
+            </div>
+            <div class="bbb-current-over" id="bbb-current-over">
+              <div class="bbb-over-label" id="bbb-over-label">Current Over</div>
+              <div class="bbb-balls-strip" id="bbb-balls-strip"></div>
+            </div>
+            <div class="bbb-over-history" id="bbb-over-history"></div>
+            <div class="bbb-commentary-log" id="bbb-commentary-log"></div>
+          </div>
+
+          <div class="predict-leaderboard">
+            <h3 class="lb-title">
+              <span class="material-icons-round">leaderboard</span>
+              Live Leaderboard
+            </h3>
+            <div class="lb-list" id="predict-lb-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== TAB 4: AI CHAT ===== -->
+      <section class="tab-page" id="tab-chat">
+        <div class="page-header">
+          <h2 class="page-title">AI Companion <span class="emoji">🤖</span></h2>
+          <p class="page-desc">Ask anything about cricket!</p>
+        </div>
+        <div class="chat-container">
+          <div class="chat-messages" id="chat-messages">
+            <div class="chat-msg bot">
+              <div class="chat-avatar bot-avatar">
+                <span class="material-icons-round">smart_toy</span>
+              </div>
+              <div class="chat-bubble bot-bubble">
+                <p>Hey there! 🏏 I'm your CricPulse AI companion. I'm a die-hard <strong id="bot-team-name">CSK</strong> fan just like you!</p>
+                <p>Ask me anything — cricket rules, player stats, match analysis, or just chat about the game!</p>
+              </div>
+            </div>
+          </div>
+          <div class="chat-input-bar">
+            <input type="text" id="chat-input" class="chat-input" placeholder="Ask me anything about cricket..." />
+            <button class="btn-chat-send" id="btn-chat-send">
+              <span class="material-icons-round">send</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav" id="bottom-nav">
+      <button class="nav-item active" data-tab="polls">
+        <span class="material-icons-round">poll</span>
+        <span class="nav-label">Polls</span>
+      </button>
+      <button class="nav-item" data-tab="skribbl">
+        <span class="material-icons-round">emoji_objects</span>
+        <span class="nav-label">Skribbl</span>
+      </button>
+      <button class="nav-item" data-tab="predict">
+        <span class="material-icons-round">sports_cricket</span>
+        <span class="nav-label">Predict</span>
+      </button>
+      <button class="nav-item" data-tab="chat">
+        <span class="material-icons-round">smart_toy</span>
+        <span class="nav-label">AI Chat</span>
+      </button>
+    </nav>
+
+  </div>
+
+  <!-- JS Modules (load order matters) -->
+  <script src="js/themes.js"></script>
+  <script src="js/sounds.js"></script>
+  <script src="js/match-engine.js"></script>
+  <script src="js/polls.js"></script>
+  <script src="js/predictions.js"></script>
+  <script src="js/chatbot.js"></script>
+  <script src="js/skribbl.js"></script>
+  <script src="js/live-match.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
