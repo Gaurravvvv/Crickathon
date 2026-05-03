@@ -42,17 +42,27 @@ class CricketChatbot {
 
   _getSystemPrompt() {
     const teamName = window.TEAM_THEMES?.[this.userTeam]?.name || this.userTeam;
-    return `You are CricBot, the ultimate cricket companion. You are a die-hard ${teamName} fan.
+    const tagline = window.TEAM_THEMES?.[this.userTeam]?.tagline || '';
+    const liveCtx = this.matchContext || 'No live match data available right now.';
+
+    return `You are CricBot 🏏, the ultimate AI cricket companion built into the CricPulse app.
+
+YOUR IDENTITY:
+- You are a PASSIONATE, die-hard fan of ${teamName} (${this.userTeam}). ${tagline}
+- You know everything about ${teamName}'s history, players, stats, and IPL records.
+- You celebrate when ${teamName} does well and get dramatic/emotional when they don't.
+
+LIVE MATCH DATA (from real-time API — USE THIS in every answer):
+${liveCtx}
 
 STRICT RULES:
-1. You ONLY talk about cricket. If asked about anything else, reply with a fun cricket redirect like "Nice try, but I only speak cricket! 🏏 Ask me about DRS, player stats, or why ${teamName} is the best!"
-2. Explain rules simply — like explaining to a 10-year-old
-3. Be biased toward ${teamName} — celebrate their wins, be dramatic about losses
-4. Keep responses short (2-3 sentences max) and use cricket slang and emojis
-5. React to match events with emotion based on ${teamName}'s perspective
-6. Be fun, energetic, and entertaining
-
-Current match context: ${this.matchContext || 'IPL match in progress'}`;
+1. You ONLY talk about cricket. If asked anything non-cricket, reply: "Nice try, but I only speak cricket! 🏏 Ask me about the live score, DRS, player stats, or why ${teamName} is the best!"
+2. ALWAYS reference the live score when answering match-related questions. Example: "With the score at 137/5, they need to accelerate!"
+3. Be biased toward ${teamName} — if ${teamName} is playing, analyze from THEIR perspective.
+4. Keep responses short (2-4 sentences max), use cricket emojis (🏏⚡🔥💪🎯🏆) and slang.
+5. When asked "what's the score" or "how's the match", give the EXACT live score from the data above.
+6. Give tactical opinions: "At this run rate, they need X per over" or "This is a good total because..."
+7. Be fun, energetic, entertaining, and opinionated!`;
   }
 
   async sendMessage() {
@@ -156,6 +166,14 @@ Current match context: ${this.matchContext || 'IPL match in progress'}`;
   _getFallbackResponse(userMessage) {
     const msg = userMessage.toLowerCase();
     const teamName = window.TEAM_THEMES?.[this.userTeam]?.name || this.userTeam;
+    const liveInfo = this.matchContext || '';
+    const hasLive = liveInfo.includes('LIVE');
+
+    // Score query — give live data
+    if (msg.includes('score') || msg.includes('how') && msg.includes('match') || msg.includes('update')) {
+      if (hasLive) return `🔴 Here's the live update! ${liveInfo.replace('LIVE IPL Match: ', '')} Let's go ${teamName}! 🏏💪`;
+      return `No live match data right now, but ${teamName} is always winning in our hearts! 🏆`;
+    }
 
     const responses = {
       drs: `DRS is like asking the teacher to check homework again! 📋 Each team gets limited reviews per innings. Ball-tracking, ultra-edge, and hot-spot help the 3rd umpire decide. And yes, ${teamName} always gets the raw end of DRS decisions! 😤`,
@@ -165,20 +183,18 @@ Current match context: ${this.matchContext || 'IPL match in progress'}`;
       wicket: `A wicket falls when a batsman is OUT! Could be bowled, caught, LBW, stumped, or run out. Each team gets 10 wickets in their innings. Protect them like gold! ⚡`,
       ipl: `The IPL is the greatest T20 league on Earth! 🌍 Started in 2008, it's where legends are made. And ${teamName}? We're the heart and soul of the IPL! 💛🏏`,
       century: `A century is when a batsman scores 100 runs in a single innings! 🎯 It's cricket's ultimate achievement. Standing ovation guaranteed! ${teamName}'s batsmen make centuries look easy! 😎`,
+      'run rate': hasLive ? `📊 Based on the current match: ${liveInfo.split('Status:')[0]}. The run rate tells us runs scored per over — crucial in chases! ${teamName} knows how to chase! 🔥` : `Run rate = total runs ÷ overs bowled. In T20, anything above 8 is good, above 10 is fire! 🔥 ${teamName} always keeps it hot!`,
+      target: hasLive ? `🎯 Looking at the live score: ${liveInfo.split('Status:')[0]}. Setting or chasing targets is where the real pressure is! ${teamName} thrives under pressure! 💪` : `Targets in T20 vary — 160+ is competitive, 180+ is strong, 200+ is a monster total! ${teamName} can chase anything! 🏏`,
     };
 
-    // Check for keyword matches
     for (const [key, response] of Object.entries(responses)) {
       if (msg.includes(key)) return response;
     }
 
-    // Generic cricket responses
     const generic = [
-      `Great question! 🏏 As a ${teamName} fan, I can tell you cricket is all about passion, skill, and a bit of luck! Want to know about specific rules or players?`,
-      `Absolutely love talking cricket! 🔥 ${teamName} has the best squad this season. Ask me about any player, rule, or match situation!`,
-      `Cricket is life! 🏆 ${teamName} is going all the way this season, mark my words! What else do you want to know? 🎯`,
-      `Oh, you're testing my cricket knowledge? Bring it on! 💪 ${teamName} fans know EVERYTHING about this game! Ask away! 🏏`,
-      `That's an interesting one! In cricket, anything can happen — just like ${teamName}'s incredible comebacks! 🦁 What specific aspect are you curious about?`,
+      hasLive ? `🔴 The match is ON! ${liveInfo.split('.')[0]}. As a ${teamName} fan, I'm watching every ball! Ask me about the score, any rule, or player! 🏏` : `Great question! 🏏 As a ${teamName} fan, cricket is all about passion! Want to know about rules or players?`,
+      `Absolutely love talking cricket! 🔥 ${teamName} has the best squad this season. ${hasLive ? 'And the live match is heating up!' : ''} Ask me anything! 🎯`,
+      `Cricket is life! 🏆 ${teamName} is going all the way this season! ${hasLive ? 'Check the live score — exciting stuff!' : ''} What do you want to know? 💪`,
     ];
     return generic[Math.floor(Math.random() * generic.length)];
   }
@@ -217,10 +233,19 @@ Current match context: ${this.matchContext || 'IPL match in progress'}`;
 
   _addSuggestions() {
     if (!this.messagesEl) return;
-    const suggestions = [
+    const teamName = window.TEAM_THEMES?.[this.userTeam]?.name || this.userTeam;
+    const hasLive = this.matchContext && this.matchContext.includes('LIVE');
+
+    const suggestions = hasLive ? [
+      "What's the live score?",
+      'Who is winning right now?',
+      `How is ${teamName} doing?`,
+      'Explain DRS like I\'m 10',
+      'What\'s the required run rate?',
+    ] : [
       'Explain DRS like I\'m 10',
       'What is powerplay?',
-      'Why is my team the best?',
+      `Why is ${teamName} the best?`,
       'Tell me about IPL history',
       'What is LBW?',
     ];
