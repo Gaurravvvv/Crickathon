@@ -1,7 +1,7 @@
 /* ========== CricPulse — Firebase Auth ========== */
 
 const firebaseConfig = {
-  apiKey: "AIzaSyD-6jIbm9GGQilOlEPDE8ZW3JDLXqRaqDU",
+  apiKey: ""
   authDomain: "cricket-b7a19.firebaseapp.com",
   projectId: "cricket-b7a19",
   storageBucket: "cricket-b7a19.firebasestorage.app",
